@@ -26,8 +26,25 @@
         <a href="{{route('productos.create')}}">
             <button type="button" class="btn btn-primary">Añadir nuevo registro</button>
         </a>
+
+
+        {{-- <a href="{{route('productos.create')}}">
+            <button type="button" class="btn btn-success">Importar</button>
+        </a> --}}
     </div>
     @endcan
+
+    {{-- <form action="{{ route('productos.import') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <input type="file" name="file_import" class="form-control-file" id="file">
+        <button type="submit" class="btn btn-primary">Importar Productos</button>
+    </form> --}}
+
+    <form action="{{ route('productos.import') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <input type="file" name="file_import" class="form-control-file" id="file">
+        <button type="submit" class="btn btn-primary">Importar Productos</button>
+
 
     <div class="card">
         <div class="card-header">
@@ -40,9 +57,11 @@
                     <tr>
                         <th>Código</th>
                         <th>Nombre</th>
+                        <th>Stock</th>
+                        <th>Descripcion</th>
                         <th>Marca</th>
-                        <th>Presentación</th>
-                        <th>Categorías</th>
+                        <th>Presentacion</th>
+                        <th>Categoria</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -55,6 +74,12 @@
                         </td>
                         <td>
                             {{$item->nombre}}
+                        </td>
+                        <td>
+                            {{$item->stock}}
+                        </td>
+                        <td>
+                            {{$item->descripcion}}
                         </td>
                         <td>
                             {{$item->marca->caracteristica->nombre}}
@@ -185,6 +210,7 @@
                     </div>
                     @endforeach
                 </tbody>
+            </form>
             </table>
         </div>
 

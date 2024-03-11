@@ -29,7 +29,7 @@ class compraController extends Controller
         $compras = Compra::with('comprobante','proveedore.persona')
         ->where('estado',1)
         ->latest()
-        ->get(); 
+        ->get();
 
         return view('compra.index',compact('compras'));
     }
@@ -51,54 +51,61 @@ class compraController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreCompraRequest $request)
-    {
-        try{
-            DB::beginTransaction();
+{
+    try{
+        DB::beginTransaction();
 
-            //Llenar tabla compras
-            $compra = Compra::create($request->validated());
+        //Llenar tabla compras
+        $compra = Compra::create($request->validated());
 
-            //Llenar tabla compra_producto
-            //1.Recuperar los arrays
-            $arrayProducto_id = $request->get('arrayidproducto');
-            $arrayCantidad = $request->get('arraycantidad');
-            $arrayPrecioCompra = $request->get('arraypreciocompra');
-            $arrayPrecioVenta = $request->get('arrayprecioventa');
+        //Llenar tabla compra_producto
+        //1.Recuperar los arrays
+        $arrayProducto_id = $request->get('arrayidproducto');
+        $arrayCantidad = $request->get('arraycantidad');
+        $arrayPrecioCompra = $request->get('arraypreciocompra');
 
-            //2.Realizar el llenado
-            $siseArray = count($arrayProducto_id);
-            $cont = 0;
-            while($cont < $siseArray){
-                $compra->productos()->syncWithoutDetaching([
-                    $arrayProducto_id[$cont] => [
-                        'cantidad' => $arrayCantidad[$cont],
-                        'precio_compra' => $arrayPrecioCompra[$cont],
-                        'precio_venta' => $arrayPrecioVenta[$cont]
-                    ]
-                ]);
+        //2.Realizar el llenado
+        $siseArray = count($arrayProducto_id);
+        $cont = 0;
+        while($cont < $siseArray){
+            //Calcular el precio de venta
+            $precioVenta = $this->calcularPrecioVenta($arrayPrecioCompra[$cont]);
 
-                //3.Actualizar el stock
-                $producto = Producto::find($arrayProducto_id[$cont]);
-                $stockActual = $producto->stock;
-                $stockNuevo = intval($arrayCantidad[$cont]);
+            $compra->productos()->syncWithoutDetaching([
+                $arrayProducto_id[$cont] => [
+                    'cantidad' => $arrayCantidad[$cont],
+                    'precio_compra' => $arrayPrecioCompra[$cont],
+                    'precio_venta' => $precioVenta
+                ]
+            ]);
 
-                DB::table('productos')
-                ->where('id',$producto->id)
-                ->update([
-                    'stock' => $stockActual + $stockNuevo
-                ]);
+            //3.Actualizar el stock
+            $producto = Producto::find($arrayProducto_id[$cont]);
+            $stockActual = $producto->stock;
+            $stockNuevo = intval($arrayCantidad[$cont]);
 
-                $cont++;
+            DB::table('productos')
+            ->where('id',$producto->id)
+            ->update([
+                'stock' => $stockActual + $stockNuevo
+            ]);
 
-            }
+            $cont++;
 
-            DB::commit();
-        }catch(Exception $e){
-            DB::rollBack();
         }
 
-        return redirect()->route('compras.index')->with('success','compra exitosa');
+        DB::commit();
+    }catch(Exception $e){
+        DB::rollBack();
     }
+
+    return redirect()->route('compras.index')->with('success','compra exitosa');
+}
+
+private function calcularPrecioVenta($precioCompra)
+{
+    return $precioCompra * 1.3;
+}
 
     /**
      * Display the specified resource.
@@ -136,4 +143,6 @@ class compraController extends Controller
 
         return redirect()->route('compras.index')->with('success','Compra eliminada');
     }
+
+
 }

@@ -11,6 +11,9 @@ use App\Models\Producto;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
+use App\Imports\ProductsImport;
 
 class ProductoController extends Controller
 {
@@ -26,9 +29,9 @@ class ProductoController extends Controller
      */
     public function index()
     {
-        $productos = Producto::with(['categorias.caracteristica','marca.caracteristica','presentacione.caracteristica'])->latest()->get();
-    
-        return view('producto.index',compact('productos'));
+        $productos = Producto::with(['categorias.caracteristica', 'marca.caracteristica', 'presentacione.caracteristica'])->latest()->get();
+
+        return view('producto.index', compact('productos'));
     }
 
     /**
@@ -123,7 +126,7 @@ class ProductoController extends Controller
             ->where('c.estado', 1)
             ->get();
 
-        return view('producto.edit',compact('producto','marcas','presentaciones','categorias'));
+        return view('producto.edit', compact('producto', 'marcas', 'presentaciones', 'categorias'));
     }
 
     /**
@@ -131,17 +134,16 @@ class ProductoController extends Controller
      */
     public function update(UpdateProductoRequest $request, Producto $producto)
     {
-        try{
+        try {
             DB::beginTransaction();
 
             if ($request->hasFile('img_path')) {
                 $name = $producto->handleUploadImage($request->file('img_path'));
 
                 //Eliminar si existiese una imagen
-                if(Storage::disk('public')->exists('productos/'.$producto->img_path)){
-                    Storage::disk('public')->delete('productos/'.$producto->img_path);
+                if (Storage::disk('public')->exists('productos/' . $producto->img_path)) {
+                    Storage::disk('public')->delete('productos/' . $producto->img_path);
                 }
-
             } else {
                 $name = $producto->img_path;
             }
@@ -192,5 +194,13 @@ class ProductoController extends Controller
         }
 
         return redirect()->route('productos.index')->with('success', $message);
+    }
+    public function import(Request $request)
+    {
+
+        $file = $request->file('file_import');
+        Excel::import(new ProductsImport, $file);
+        return redirect()->route('productos.index')->with('success', 'Productos importados excitosamente');
+
     }
 }

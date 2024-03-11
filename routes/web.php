@@ -42,6 +42,10 @@ Route::resources([
     'profile' => profileController::class
 ]);
 
+
+Route::post('productos/import', [ProductoController::class, 'import'])->name('productos.import');
+
+// Route::post('/productos/import', [ProductoController::class, 'import'])->name('productos.import');
 Route::get('/login',[loginController::class,'index'])->name('login');
 Route::post('/login',[loginController::class,'login']);
 Route::get('/logout',[logoutController::class,'logout'])->name('logout');
