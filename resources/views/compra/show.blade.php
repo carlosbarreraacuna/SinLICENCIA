@@ -185,7 +185,7 @@
                         <th id="th-suma"></th>
                     </tr>
                     <tr>
-                        <th colspan="4">IGV:</th>
+                        <th colspan="4">IVA:</th>
                         <th id="th-igv"></th>
                     </tr>
                     <tr>

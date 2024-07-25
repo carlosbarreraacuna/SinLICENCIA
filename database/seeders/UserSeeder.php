@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $user = User::create([
-            'name' => 'Sak Noel',
+            'name' => 'admin',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('12345678')
         ]);
@@ -26,6 +26,6 @@ class UserSeeder extends Seeder
         $permisos = Permission::pluck('id','id')->all();
         $rol->syncPermissions($permisos);
         //$user = User::find(1);
-        $user->assignRole('administrador'); 
+        $user->assignRole('administrador');
     }
 }

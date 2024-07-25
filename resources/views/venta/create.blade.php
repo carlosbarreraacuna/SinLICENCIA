@@ -53,21 +53,27 @@
                         </div>
 
                         <!-----Precio de venta---->
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label for="precio_venta" class="form-label">Precio de venta:</label>
                             <input disabled type="number" name="precio_venta" id="precio_venta" class="form-control" step="0.1">
                         </div>
 
                         <!-----Cantidad---->
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label for="cantidad" class="form-label">Cantidad:</label>
                             <input type="number" name="cantidad" id="cantidad" class="form-control">
                         </div>
 
                         <!----Descuento---->
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label for="descuento" class="form-label">Descuento:</label>
                             <input type="number" name="descuento" id="descuento" class="form-control">
+                        </div>
+
+                        <!-----Subtoal---->
+                        <div class="col-sm-6">
+                            <label for="subtotal" class="form-label">Subtotal:</label>
+                            <input type="number" name="cantidad" id="subtotal" class="form-control">
                         </div>
 
                         <!-----botón para agregar--->
@@ -109,7 +115,7 @@
                                         </tr>
                                         <tr>
                                             <th></th>
-                                            <th colspan="4">IGV %</th>
+                                            <th colspan="4">IVA %</th>
                                             <th colspan="2"><span id="igv">0</span></th>
                                         </tr>
                                         <tr>
@@ -284,7 +290,7 @@
             descuento = 0;
         }
 
-        //Validaciones 
+        //Validaciones
         //1.Para que los campos no esten vacíos
         if (idProducto != '' && cantidad != '') {
 
@@ -441,4 +447,29 @@
     }
     //Fuente: https://es.stackoverflow.com/questions/48958/redondear-a-dos-decimales-cuando-sea-necesario
 </script>
+<script>
+    // Obtén los elementos del DOM
+    const precioVentaInput = document.getElementById('precio_venta');
+    const cantidadInput = document.getElementById('cantidad');
+    const subtotalInput = document.getElementById('subtotal');
+
+    // Escucha el evento de cambio en los campos de precio de venta y cantidad
+    precioVentaInput.addEventListener('input', calcularSubtotal);
+    cantidadInput.addEventListener('input', calcularSubtotal);
+
+    // Función para calcular el subtotal
+    function calcularSubtotal() {
+        const precioVenta = parseFloat(precioVentaInput.value);
+        const cantidad = parseFloat(cantidadInput.value);
+
+        // Verifica si los valores son válidos
+        if (!isNaN(precioVenta) && !isNaN(cantidad)) {
+            const subtotal = precioVenta * cantidad;
+            subtotalInput.value = subtotal.toFixed(2); // Redondea a 2 decimales
+        } else {
+            subtotalInput.value = ''; // Si los valores no son válidos, deja el campo vacío
+        }
+    }
+</script>
+
 @endpush

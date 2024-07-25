@@ -1,11 +1,6 @@
 @charset "UTF-8";
 
-/*!
- * Bootstrap  v5.2.3 (https://getbootstrap.com/)
- * Copyright 2011-2022 The Bootstrap Authors
- * Copyright 2011-2022 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- */
+
 :root {
     --bs-gray: #69707a;
     --bs-gray-dark: #363d47;
@@ -6822,12 +6817,7 @@ section {
     }
 }
 
-/*!
- * html5-device-mockups (https://github.com/pixelsign/html5-device-mockups)
- * Copyright 2013 - 2018 pixelsign
- * Licensed under MIT (https://github.com/pixelsign/html5-device-mockups/blob/master/LICENSE.txt)
- * Last Build: Thu Dec 20 2018 14:05:50
- */
+
 .footer {
     font-size: .875rem
 }
