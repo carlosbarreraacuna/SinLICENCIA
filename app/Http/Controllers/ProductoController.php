@@ -11,9 +11,6 @@ use App\Models\Producto;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Http\Request;
-use App\Imports\ProductsImport;
 
 class ProductoController extends Controller
 {
@@ -140,7 +137,7 @@ class ProductoController extends Controller
             if ($request->hasFile('img_path')) {
                 $name = $producto->handleUploadImage($request->file('img_path'));
 
-                //Eliminar si existiese una imagen
+                //Eliminar si existiese una imagenÑ
                 if (Storage::disk('public')->exists('productos/' . $producto->img_path)) {
                     Storage::disk('public')->delete('productos/' . $producto->img_path);
                 }
@@ -194,13 +191,5 @@ class ProductoController extends Controller
         }
 
         return redirect()->route('productos.index')->with('success', $message);
-    }
-    public function import(Request $request)
-    {
-
-        $file = $request->file('file_import');
-        Excel::import(new ProductsImport, $file);
-        return redirect()->route('productos.index')->with('success', 'Productos importados excitosamente');
-
     }
 }
